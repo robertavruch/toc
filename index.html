@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmony 3.0 — Workshop Drive-Through</title>
+<style>
+  :root{
+    --paper:#F8F6EE; --ink:#22304F; --ink70:rgba(34,48,79,.72); --ink50:rgba(34,48,79,.52);
+    --hair:rgba(34,48,79,.16);
+    --blue:#7B93DB; --bluepale:#EAEFFB; --bluedk:#3D5AA8;
+    --gold:#D9B348; --goldpale:#FAF6E2; --golddk:#95762A;
+    --sage:#8FB98B; --sagepale:#EAF2E8; --sagedk:#4E7D4A;
+    --red:#C4574E; --redpale:#F9E7E5; --navy:#2E3A59;
+    --serif: Charter, "Bitstream Charter", Georgia, "Times New Roman", serif;
+    --sans: "Avenir Next","Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--serif);overflow:hidden;}
+
+  .slide{display:none;height:100vh;padding:56px 84px 90px;flex-direction:column;}
+  .slide.active{display:flex;animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+  .kick{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ink50);margin-bottom:12px;}
+  h1{font-size:52px;font-weight:700;letter-spacing:-.5px;line-height:1.08;margin-bottom:8px;}
+  h1 em{font-weight:400;font-style:italic;color:var(--ink70);}
+  h2{font-size:38px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px;}
+  h2 em{font-weight:400;font-style:italic;color:var(--ink70);}
+  .lede{font-size:19px;font-style:italic;color:var(--ink50);margin-bottom:26px;max-width:1050px;line-height:1.4;}
+
+  .cols{display:flex;gap:44px;flex:1;min-height:0;}
+  .main{flex:1.25;min-width:0;}
+  .side{flex:1;min-width:0;display:flex;flex-direction:column;gap:12px;}
+
+  .draft{background:#fff;border:1.5px solid var(--hair);border-top:5px solid var(--navy);border-radius:6px;padding:26px 30px;}
+  .draft .dl{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--sagedk);margin-bottom:10px;}
+  .draft .big{font-size:26px;line-height:1.35;font-weight:700;}
+  .draft p{font-size:17.5px;line-height:1.5;color:var(--ink70);}
+  .draft p+p{margin-top:10px;}
+  .draft .was{font-size:14px;font-style:italic;color:var(--ink50);margin-top:14px;border-top:1px dashed var(--hair);padding-top:10px;}
+  .draft .was s{color:rgba(34,48,79,.4);}
+  .draft b{color:var(--ink);}
+  .draft ul{margin-top:8px;}
+  .draft li{font-size:17px;line-height:1.5;color:var(--ink70);list-style:none;padding-left:16px;position:relative;margin-bottom:6px;}
+  .draft li::before{content:"›";position:absolute;left:0;font-weight:700;color:var(--bluedk);}
+
+  .side .sl{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink50);}
+  .chip{background:#fff;border:1.5px solid var(--hair);border-left:5px solid var(--gold);border-radius:6px;padding:12px 16px;}
+  .chip .ct{font-family:var(--sans);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;}
+  .chip p{font-size:14.5px;line-height:1.4;color:var(--ink70);}
+  .chip p i{color:var(--ink50);}
+
+  .badge{display:inline-block;font-family:var(--sans);font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;border-radius:999px;padding:5px 14px;margin-right:8px;}
+  .b-open{background:var(--red);color:#fff;}
+  .b-adopted{background:var(--sagepale);color:var(--sagedk);}
+  .b-new{background:var(--goldpale);color:var(--golddk);}
+  .openrow{margin-top:16px;font-size:16px;color:var(--ink70);}
+  .openrow .badge{vertical-align:middle;}
+
+  /* translation cards */
+  .transgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;flex:1;align-content:start;}
+  .tcard{background:#fff;border:1.5px solid var(--hair);border-radius:8px;padding:22px 24px;}
+  .tcard .term{font-size:22px;font-weight:700;font-style:italic;}
+  .tcard .flagged{font-family:var(--sans);font-size:12px;color:var(--red);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:6px 0 12px;}
+  .tcard .meant{font-family:var(--sans);font-size:12px;color:var(--sagedk);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+  .tcard p{font-size:16.5px;line-height:1.5;color:var(--ink70);}
+  .tcard .zing{margin-top:12px;font-size:14.5px;font-style:italic;color:var(--ink50);}
+
+  /* pop slide */
+  .popgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:8px;}
+  .popcard{background:#fff;border:1.5px solid var(--hair);border-top:5px solid var(--gold);border-radius:6px;padding:20px 24px;}
+  .popcard .pt{font-family:var(--sans);font-size:12.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--golddk);margin-bottom:8px;}
+  .popcard p, .popcard li{font-size:16.5px;line-height:1.5;color:var(--ink70);}
+  .popcard li{list-style:none;padding-left:14px;position:relative;margin-bottom:6px;}
+  .popcard li::before{content:"›";position:absolute;left:0;color:var(--golddk);font-weight:700;}
+
+  /* assumptions */
+  .agrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;flex:1;align-content:start;}
+  .acard{background:#fff;border:1.5px solid var(--hair);border-radius:8px;padding:20px 24px;}
+  .acard h3{font-size:21px;margin:8px 0 10px;}
+  .acard p{font-size:14.5px;line-height:1.45;color:var(--ink70);margin-bottom:8px;}
+  .acard p b{font-family:var(--sans);font-size:12px;letter-spacing:.5px;}
+
+  /* north star */
+  .nsgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:26px;margin-top:6px;}
+  .nscard{border-radius:8px;padding:22px 24px;border:2px dashed var(--ink50);background:#fff;}
+  .nscard.lead{background:var(--navy);border:none;color:#fff;}
+  .nscard .nt{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;color:var(--bluedk);}
+  .nscard.lead .nt{color:#F1F075;}
+  .nscard p{font-size:17px;line-height:1.5;}
+  .nscard.lead p{color:#fff;}
+  .nscard .who{margin-top:10px;font-size:13.5px;font-style:italic;color:var(--ink50);}
+  .nscard.lead .who{color:rgba(255,255,255,.65);}
+
+  /* nav */
+  .nav{position:fixed;bottom:26px;right:34px;display:flex;gap:10px;align-items:center;font-family:var(--sans);}
+  .nav button{font-family:var(--sans);font-size:15px;font-weight:700;border:1.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;padding:9px 20px;cursor:pointer;}
+  .nav button:hover{background:var(--ink);color:#fff;}
+  .counter{position:fixed;bottom:34px;left:38px;font-family:var(--sans);font-size:13.5px;letter-spacing:1px;color:var(--ink50);}
+  .progress{position:fixed;top:0;left:0;height:4px;background:var(--gold);transition:width .25s ease;}
+  .hint{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);font-family:var(--sans);font-size:12.5px;color:var(--ink50);letter-spacing:.5px;}
+
+  .center{justify-content:center;}
+  .center .inner{max-width:1200px;}
+  .footer-note{margin-top:auto;padding-top:16px;font-size:14px;font-style:italic;color:var(--ink50);}
+</style>
+</head>
+<body>
+
+<div class="progress" id="bar"></div>
+<div class="counter" id="counter"></div>
+<div class="nav">
+  <button onclick="go(-1)">←</button>
+  <button onclick="go(1)">→</button>
+</div>
+<div class="hint">arrow keys work too</div>
+
+<!-- 1 · TITLE + POP -->
+<section class="slide center">
+  <div class="inner">
+    <p class="kick">Leadership working session · July 23 · one hour</p>
+    <h1>Harmony 3.0 <em>— from your prework to a workshop-ready draft</em></h1>
+    <p class="lede">The bar today: directionally correct — and strong enough to be ready for the full team's eyes in Costa Rica.</p>
+    <div class="popgrid">
+      <div class="popcard">
+        <p class="pt">Purpose</p>
+        <p>Align on a working draft of Harmony's theory of change + logic model — refined by your prework, strong enough to workshop with the full team in Costa Rica and to stand behind in funder conversations.</p>
+      </div>
+      <div class="popcard">
+        <p class="pt">We leave with</p>
+        <ul>
+          <li>An endorsed (or endorsed-with-edits) draft of both: a theory of change statement and the logic model for Harmony</li>
+          <li>A short list of open questions we're deliberately saving for future leadership session(s) — and a separate list we'd like to bring to the full team in Costa Rica</li>
+        </ul>
+      </div>
+      <div class="popcard">
+        <p class="pt">The hour, roughly</p>
+        <ul>
+          <li>Welcome + frame — 5 min</li>
+          <li>Drive-through: the draft + your feedback themes — 12 min</li>
+          <li>Silent gallery walk on the Miro board — 10 min</li>
+          <li>Focused discussion where the group votes to spend time — 20 min</li>
+          <li>Costa Rica priorities + parking lot — 10 min</li>
+          <li>Close-out + next steps — 3 min</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · LOST IN AI TRANSLATION (visual gag — Rob voiceovers the definitions) -->
+<!-- To use your own AI-generated image: save it as "lost-in-ai-translation.png" in the same folder as this file. It will replace the illustration automatically. -->
+<section class="slide center">
+  <div class="inner" style="text-align:center;">
+    <h1 style="margin-bottom:26px;">Lost in AI translation</h1>
+    <img src="lost-in-ai-translation.png" alt="" style="max-width:1050px;max-height:560px;border-radius:10px;box-shadow:0 3px 18px rgba(34,48,79,.18);" onerror="this.style.display='none';document.getElementById('mapscene').style.display='block';">
+    <svg id="mapscene" style="display:none;margin:0 auto;" width="1050" height="520" viewBox="0 0 1050 520" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="1050" height="520" rx="10" fill="#FFFFFF"/>
+      <line x1="0" y1="430" x2="1050" y2="430" stroke="rgba(34,48,79,.25)" stroke-width="2"/>
+      <rect x="60" y="40" width="180" height="70" rx="6" fill="#EAEFFB"/>
+      <text x="150" y="82" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="17" fill="#3D5AA8">“standing audience maps”</text>
+      <!-- map 1: proud stance -->
+      <g transform="translate(180,180)">
+        <path d="M0 0 L50 -12 L100 0 L150 -12 L150 148 L100 160 L50 148 L0 160 Z" fill="#A6BCE8" stroke="#3D5AA8" stroke-width="3"/>
+        <path d="M50 -12 L50 148 M100 0 L100 160" stroke="#3D5AA8" stroke-width="2" opacity=".5"/>
+        <circle cx="45" cy="60" r="6" fill="#F1F075"/><path d="M45 60 Q75 40 105 70 Q120 85 100 100" stroke="#D9B348" stroke-width="3" fill="none" stroke-dasharray="6 5"/><circle cx="100" cy="100" r="6" fill="#C4574E"/>
+        <line x1="45" y1="160" x2="45" y2="235" stroke="#22304F" stroke-width="7" stroke-linecap="round"/>
+        <line x1="105" y1="160" x2="105" y2="235" stroke="#22304F" stroke-width="7" stroke-linecap="round"/>
+        <ellipse cx="38" cy="242" rx="22" ry="9" fill="#22304F"/><ellipse cx="112" cy="242" rx="22" ry="9" fill="#22304F"/>
+      </g>
+      <!-- map 2: contrapposto -->
+      <g transform="translate(450,160)">
+        <path d="M0 0 L45 10 L90 -8 L135 8 L135 168 L90 152 L45 170 L0 152 Z" fill="#B9E0B5" stroke="#4E7D4A" stroke-width="3"/>
+        <path d="M45 10 L45 170 M90 -8 L90 152" stroke="#4E7D4A" stroke-width="2" opacity=".5"/>
+        <circle cx="35" cy="55" r="5" fill="#F1F075"/><circle cx="95" cy="95" r="5" fill="#C4574E"/><path d="M35 55 Q65 90 95 95" stroke="#4E7D4A" stroke-width="3" fill="none" stroke-dasharray="6 5"/>
+        <line x1="40" y1="165" x2="30" y2="250" stroke="#22304F" stroke-width="7" stroke-linecap="round"/>
+        <line x1="95" y1="160" x2="120" y2="245" stroke="#22304F" stroke-width="7" stroke-linecap="round"/>
+        <ellipse cx="24" cy="257" rx="22" ry="9" fill="#22304F"/><ellipse cx="128" cy="252" rx="22" ry="9" fill="#22304F"/>
+      </g>
+      <!-- map 3: mid-stride -->
+      <g transform="translate(720,190)">
+        <path d="M0 -6 L55 6 L110 -10 L110 140 L55 156 L0 144 Z" fill="#F4E9B8" stroke="#95762A" stroke-width="3"/>
+        <path d="M55 6 L55 156" stroke="#95762A" stroke-width="2" opacity=".5"/>
+        <circle cx="30" cy="48" r="5" fill="#3D5AA8"/><circle cx="82" cy="88" r="5" fill="#C4574E"/><path d="M30 48 Q56 78 82 88" stroke="#95762A" stroke-width="3" fill="none" stroke-dasharray="6 5"/>
+        <line x1="35" y1="150" x2="12" y2="228" stroke="#22304F" stroke-width="7" stroke-linecap="round"/>
+        <line x1="80" y1="152" x2="102" y2="230" stroke="#22304F" stroke-width="7" stroke-linecap="round"/>
+        <ellipse cx="4" cy="235" rx="21" ry="9" fill="#22304F"/><ellipse cx="112" cy="237" rx="21" ry="9" fill="#22304F"/>
+      </g>
+      <!-- small confused map, sitting -->
+      <g transform="translate(900,300)">
+        <path d="M0 0 L35 -8 L70 0 L70 90 L35 98 L0 90 Z" fill="#F5C9C4" stroke="#C4574E" stroke-width="3"/>
+        <text x="35" y="55" text-anchor="middle" font-family="Georgia,serif" font-size="30" fill="#C4574E">?</text>
+        <line x1="18" y1="95" x2="10" y2="128" stroke="#22304F" stroke-width="6" stroke-linecap="round"/>
+        <line x1="52" y1="95" x2="62" y2="128" stroke="#22304F" stroke-width="6" stroke-linecap="round"/>
+        <ellipse cx="6" cy="133" rx="16" ry="7" fill="#22304F"/><ellipse cx="68" cy="133" rx="16" ry="7" fill="#22304F"/>
+      </g>
+      <text x="525" y="490" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="16" fill="rgba(34,48,79,.5)">standing audience maps, standing around</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 3 · MISSION -->
+<section class="slide">
+  <p class="kick">The fixed point above this exercise</p>
+  <h2>Our mission <em>— the fixed point above this exercise</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">The mission, current language</p>
+        <p style="font-size:21px;line-height:1.55;font-style:italic;">“We are a media research lab, using science, data, and creativity <b style="background:#F6EFC0;padding:0 4px;border-radius:3px;">to research and reshape our relationship with media</b>. For more than a decade, our work has helped storytellers and strategists, decision makers and dreamers, <b style="background:#F6EFC0;padding:0 4px;border-radius:3px;">harness the immense power of media to shape a positive, pluralistic future</b> and <b style="background:#F6EFC0;padding:0 4px;border-radius:3px;">support human flourishing</b>.”</p>
+        <p class="was">v0 quoted an older version — the mission grew its last clause when we weren't looking. Thanks, Paul.</p>
+      </div>
+    </div>
+    <div class="side">
+      <p class="sl">Why it matters here</p>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Mission ≠ ToC ≠ logic model</p><p>The mission names the destination. The theory of change is how we believe that future gets made. The logic model is the working map underneath — who does what, producing which outcomes, measured how.</p></div>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">“Human flourishing”</p><p>Worth noticing: the mission already reaches past media practice toward human outcomes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · DIAGNOSIS -->
+<section class="slide">
+  <p class="kick">The problem · refreshed draft + your reactions</p>
+  <h2>Diagnosis <em>— you flipped the question forward</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft — rebuilt from your prework</p>
+        <p class="big">“Which audiences can move us toward the future we want — what moves them, and how do we know?”</p>
+        <p style="margin-top:12px;">Two gaps, one missing layer: organizations can't see audiences unlike their own, and the field can't prove movement. Both trace to the same absence — nobody built the evidence layer for real audiences.</p>
+        <p class="was">was: <s>“Did we move the right people?”</s> — retrospective, and it read like we're strictly in the measurement business.</p>
+      </div>
+      <p class="openrow"><span class="badge b-open">Open</span>Whose field is this? “Narrative change” is a niche — creators and entertainment wouldn't claim it. The frame may limit the theory before it starts.</p>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">Flip the question</p><p>Partners arrive asking <i>how do we move this group</i> — and which audiences unlock the future. <i>(Justin, Paul)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">The echo-chamber gap</p><p>The deeper problem isn't missing proof — orgs can't even think about reaching people who don't share their worldview. The breakthrough is understanding audiences unlike your own. <i>(Kasia, Paul — independently)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">Whose field is this?</p><p>“Narrative-change field” is a niche — creators and entertainment wouldn't claim it. The frame limits the theory before it starts. <i>(Paul)</i></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · WHAT ONLY HARMONY HOLDS -->
+<section class="slide">
+  <p class="kick">Our position · refreshed draft + your reactions</p>
+  <h2>What only Harmony holds <em>— you found the missing strand</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft — four strands, one flywheel</p>
+        <ul>
+          <li><b>Behavioral data</b> — 500K panelists' real media engagement, not social listening or self-report</li>
+          <li><b>Values science</b> — how people perceive the world with and through media and stories</li>
+          <li><b>Experimentation</b> — a working testing platform, 1.1M+ responses</li>
+          <li><b>Sense-making &amp; strategy</b> — the multi-disciplinary, decidedly non-academic interpretive layer <span class="badge b-new">added</span></li>
+        </ul>
+        <p class="was">was: three strands, “braided.” The braid missed that the strands feed each other — and that making media ourselves generates landscape insight pure research shops can't get. <b>A flywheel, not a braid.</b></p>
+      </div>
+      <p class="openrow"><span class="badge b-open">Open</span>Toward what? Consulting? Product? What's the actual gap this choreography addresses?</p>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Missing 4th strand</p><p>The description was overly scientific; the interpretation / sense-making / strategy work is the differentiator. <i>(Paul, Jon)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Flywheel, not braid</p><p>The strands develop each other — and media practice itself is a source of insight. <i>(Kasia)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Toward what?</p><p>True — but what gap does it solve, and in what form? <i>(Katie)</i> A bigger choice hides in this question — do we offer tools others run, or judgment others buy? It returns in Strategies 2 and 3.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · ACTORS -->
+<section class="slide">
+  <p class="kick">Who does it · refreshed draft + your reactions</p>
+  <h2>Actors <em>— the cast just got bigger</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft — the widened cast</p>
+        <ul>
+          <li>Research + engineering + <b>strategy</b> teams <span class="badge b-new">added</span></li>
+          <li>Data partners (Nielsen, Comscore, YouGov) · anchor funders</li>
+          <li>The Lab · agencies · advocacy partners · CoP members</li>
+          <li><b>Storytellers, media &amp; creators</b> — as actors, not just subjects <span class="badge b-new">added</span></li>
+        </ul>
+        <p class="was">was: research + engineering carried the whole show. “The translation comes from strategy” — and if adoption means more stories reaching more audiences where they are, the people telling those stories belong in the cast.</p>
+      </div>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">Missing cast</p><p>Strategy is absent (<i>Jon</i>) · storytellers belong in (<i>Paul</i>) · media &amp; creators too (<i>Kasia</i>). Three adds, no coordination, same direction.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · ACTIVITIES -->
+<section class="slide">
+  <p class="kick">What we'd do · refreshed draft + your reactions</p>
+  <h2>Activities <em>— the making becomes visible</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft</p>
+        <ul>
+          <li>Structure and connect the Narrative Observatory's data so we — and our partners — can answer mission-critical audience questions faster, cheaper, and more flexibly</li>
+          <li>Run content tests and <b>make media ourselves</b> — testable content that also teaches us the shifting landscape <span class="badge b-new">named</span></li>
+          <li>Facilitate narrative goals with coalitions</li>
+          <li>Run communities of practice to shift the field from message-first to audience-first storytelling strategies</li>
+          <li>Develop tools, briefs, webinars, and pedagogy practitioners actually use</li>
+          <li>Publish our methods for the field to build on</li>
+        </ul>
+        <p class="was">was: production hid inside “infrastructure,” and international panels sat here as if already underway — that one moves to the wishlist, honestly labeled.</p>
+      </div>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Media making</p><p>Production should be named — both activity and output. Being practitioners is part of the moat. <i>(Kasia, Paul)</i></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · STRATEGY 1 -->
+<section class="slide">
+  <p class="kick">Strategy 1 of 3 · refreshed draft + your reactions</p>
+  <h2>Audience intelligence <em>— making sense of audiences, before the campaign</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft</p>
+        <p><b>Making sense of audiences in a fractured, distributed media ecosystem</b> — who they are, what they value, what they engage with, and how to reach them. We're restructuring and connecting the Narrative Observatory's data so partners and we can answer mission-critical audience questions faster, cheaper, and more flexibly — understanding who the right people are <b>before</b> a campaign, not auditing it afterward.</p>
+        <p style="margin-top:10px;">Underneath it, a conviction from five years of this work: <b>all audiences have a role to play in realizing a better future.</b></p>
+        <p class="was">was: <s>“standing, field-wide audience maps”</s> — the concept survived; the phrase didn't.</p>
+      </div>
+      <p class="openrow"><span class="badge b-open">Open</span>Spec the map: how is it different from our existing segmentation — octants? interactive? organized by topic? <b>What would a partner actually open?</b></p>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">“Standing maps”??</p><p>Four of six flagged the word. Fixes on the table: “pre-validated,” or plainly, “maintained as a shared asset, ready before any campaign.” <i>(Jon, Kate G., Katie, Paul)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">Bigger than measurement</p><p>Something precedes the proof question: fundamentally understanding who your audience is — and the inclusive through-line that every audience has a role to play. <i>(Paul)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">Spec the map</p><p>Everyone believes in maps; nobody can picture the product yet. That's a spec conversation, not a faith problem. <i>(Kate G., Katie, Paul)</i></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · STRATEGY 2 -->
+<section class="slide">
+  <p class="kick">Strategy 2 of 3 · refreshed draft + your reactions</p>
+  <h2>Experimentation &amp; creative <em>— the fork runs through here</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft</p>
+        <ul>
+          <li>Content tests that change briefs and go/no-go calls</li>
+          <li>Narrative goals set with partner coalitions</li>
+          <li><b>Media we make ourselves</b> — our (future) capability to create content worth testing <span class="badge b-new">named</span></li>
+          <li>Measuring effects <b>where content actually lives</b> — beyond the lab <span class="badge b-adopted">de-jargoned</span></li>
+        </ul>
+        <p class="was">was: “hardened testing platform… in-the-wild measurement R&amp;D” — infrastructure language that hid the creative capability entirely.</p>
+      </div>
+      <p class="openrow"><span class="badge b-open">Open</span>What becomes a tool others use, and what stays judgment only we bring? Paul's compass: the magic is our multi-disciplinary way of understanding humans — there's a lot in that interpretive layer that can be protected.</p>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Product vs. expertise? Or both?</p><p>“Don't compete with Grow Progress — low-margin race to the bottom” <i>(Jon)</i> vs. “internal, subscription, or self-serve?” <i>(Kate G.)</i>. Same box, two futures — maybe both.</p></div>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Name the creative capability</p><p>“Infrastructure” hides our ability to make content worth testing ourselves. <i>(Kasia, Paul)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Jargon</p><p>“In the wild” — does that just mean production? It means measuring effects where content actually lives: feeds, not the lab. <i>(Kasia, Jon)</i></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · STRATEGY 3 -->
+<section class="slide">
+  <p class="kick">Strategy 3 of 3 · refreshed draft + your reactions</p>
+  <h2>Field adoption <em>— or productized research?</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft</p>
+        <ul>
+          <li>Communities of practice running live media experiments and pressure-testing the experimentation infrastructure</li>
+          <li>Tools + teaching people actually use; published methods</li>
+          <li><b>Adopters widened</b>: media, creators, and storytellers — not just advocacy orgs <span class="badge b-new">added</span></li>
+          <li><b>Adoption redefined</b>: not just more tool users — a coordinated field moving the same direction with different superpowers <span class="badge b-new">added</span></li>
+        </ul>
+        <p class="was">And a decision hiding in plain sight: who can use the tools, and how — that's a business-model question wearing a strategy costume.</p>
+      </div>
+      <p class="openrow"><span class="badge b-open">Open</span>Justin's suggestion: rename this <b>Productized Research</b> — then product revenue becomes the long-term measure, users and adoption the near-term ones. Does that replace field adoption, sit inside it, or become its own strategy? (Jon's race-to-the-bottom caution from Strategy 2 belongs in the same conversation.)</p>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--sagedk)">Widen the adopters</p><p>Media, creators, storytellers as actors. <i>(Kasia, Paul)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--sagedk)">Adoption = alignment, not just use</p><p>A field moving the same direction, using different superpowers. <i>(Katie)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--sagedk)">Productized research</p><p>Rename the strategy; the measures follow. <i>(Justin)</i></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · SHORT-TERM -->
+<section class="slide">
+  <p class="kick">Outcomes · short-term (year 1)</p>
+  <h2>Short-term <em>— measure decisions, not usage</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft</p>
+        <p><b>Partners reach audiences where they are — through creators, with messaging tailored to them — and set audience strategy on evidence before they spend.</b></p>
+        <p style="margin-top:10px;">How we'd know: # of partners <b>changing their audience strategy</b> based on our maps and framework — not # of partners merely using a map.</p>
+        <p class="was">was: “the standing audience map is in use” — which would count most current work and prove little.</p>
+      </div>
+      <p class="openrow"><span class="badge b-open">Open</span>How embedded are we — in partners' creative process, and in measuring how their audience strategy actually changes? The measure assumes an answer we haven't given.</p>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">Reach runs through creators</p><p>Bigger than map-checking: it's where audiences are, not org channels preaching to the converted. <i>(Kasia)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">Measure decisions, not usage</p><p>Count changed strategies, not map opens. <i>(Paul, Kate G.)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--bluedk)">How embedded are we?</p><p>In the creative process? In the measurement loop? <i>(Kasia, Kate G.)</i></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · MEDIUM-TERM -->
+<section class="slide">
+  <p class="kick">Outcomes · medium-term (years 2–3)</p>
+  <h2>Medium-term <em>— the bar rises to the organization</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft</p>
+        <p><b>Audience-first work is integrated at the organizational level — visible in how campaigns get designed, not just in individual converts.</b></p>
+        <p style="margin-top:10px;">CoP-member practice change moves to the short-term column, where it belongs. International expansion moves out entirely — re-homed under Strategy 1 as capability-building, not claimed here as practice shift.</p>
+        <p class="was">was: international maps live in 2+ markets, listed as if geography were practice change. Two of you called the shoehorn independently.</p>
+      </div>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">International doesn't belong here</p><p>Expansion is a different goal — fine, but not this outcome. <i>(Jon, Katie)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--golddk)">Raise the bar to org-level</p><p>Members changing is lower-hanging fruit; organizations designing differently is the medium-term test. <i>(Paul, Katie)</i></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · LONG-TERM -->
+<section class="slide">
+  <p class="kick">Outcomes · long-term (years 3–5+)</p>
+  <h2>Long-term <em>— the field runs on it</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft">
+        <p class="dl">v1 draft — the plainspoken version</p>
+        <p><b>Anyone planning media for social change uses Harmony's offerings to check who they'd reach and whether it's working</b> — without necessarily commissioning us on a bespoke basis. Resources flow toward making media that demonstrably moves people.</p>
+        <p style="margin-top:10px;">And practice itself has shifted: the field understands that <b>all audiences have a role to play in realizing a better future</b> — and works accordingly.</p>
+        <p class="was">was: “the audience-effects layer stands as standing field infrastructure” — two of you rightly asked what on earth that meant.</p>
+      </div>
+      <p class="openrow"><span class="badge b-open">Open</span>Revenue as the measure? If Strategy 3 productizes, product revenue is the long-term indicator. The fork reaches all the way up here.</p>
+    </div>
+    <div class="side">
+      <p class="sl">What you said</p>
+      <div class="chip"><p class="ct" style="color:var(--sagedk)">Define the layer</p><p>“I'm not sure I totally understand this term and all it encompasses.” Fair. Fixed. <i>(Kasia, Paul)</i></p></div>
+      <div class="chip"><p class="ct" style="color:var(--sagedk)">Revenue as the measure?</p><p>Productized research would make product revenue the metric. <i>(Justin)</i></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · NORTH STAR -->
+<section class="slide">
+  <p class="kick">North star · the one we left open on purpose</p>
+  <h2>The altitude question <em>— three candidates, pick what leads</em></h2>
+  <p class="lede">The current draft names a practice. Kasia raised it to a capability. Jon raised it to a human outcome. They likely nest — the question is which one leads. Worth holding against the mission's own verbs: <em>research and reshape our relationship with media</em>; <em>shape a positive, pluralistic future and support human flourishing</em>.</p>
+  <div class="nsgrid">
+    <div class="nscard lead">
+      <p class="nt">A · The practice — current draft</p>
+      <p>Everyone using media for a positive, pluralistic future works from evidence about what real audiences engage with and what actually moves them — not assumption.</p>
+      <p class="who">the field works differently</p>
+    </div>
+    <div class="nscard">
+      <p class="nt">B · The capability — per Kasia</p>
+      <p>Organizations working toward a positive, pluralistic future can engage all the audiences they need to make that future real.</p>
+      <p class="who">orgs can do what they can't today</p>
+    </div>
+    <div class="nscard">
+      <p class="nt">C · The human outcome — per Jon</p>
+      <p>People have authentic, empathetic conversations rooted in mutual understanding — and knowing their media is the path to it.</p>
+      <p class="who">people's lives are different (and note: the mission's new clause already points here)</p>
+    </div>
+  </div>
+  <p class="openrow" style="margin-top:22px;"><span class="badge b-open">Open</span>Which altitude leads — and how does this north star sit in conversation with our mission? (Katie's push lives here too: in some ways the current draft describes what we already do — the theory of change should be more specific about what we're working towards.)</p>
+</section>
+
+<!-- 15 · ASSUMPTIONS -->
+<section class="slide">
+  <p class="kick">The load-bearing assumptions · status after your reads</p>
+  <h2>Three assumptions, three verdicts</h2>
+  <div class="agrid">
+    <div class="acard" style="border-top:5px solid var(--red);">
+      <span class="badge b-open">A1 · Contested — rebuilding</span>
+      <h3>The diagnosis holds</h3>
+      <p style="font-style:italic;border-left:3px solid var(--hair);padding-left:10px;">“The missing audience layer is THE bottleneck holding the field back — not one gap among many.”</p>
+      <p><b>JON:</b> “we have provided the audience layer to many fields and none of them are transformed.”</p>
+      <p><b>KASIA:</b> it's part of a stack of issues rooted in not knowing how to reach audiences with a different worldview.</p>
+      <p><b>PAUL:</b> the breakthrough is how audiences <i>different from yourself</i> can contribute to your goals, if stories are told right.</p>
+      <p><b>KATIE:</b> resources are the bottleneck; the layer's job may be streamlining how budgets and strategies get set.</p>
+      <p style="font-style:italic;color:var(--ink50);">Four flags, four directions — the rebuild follows whatever question wins today.</p>
+    </div>
+    <div class="acard" style="border-top:5px solid var(--gold);">
+      <span class="badge b-new">A2 · Reframed — test it</span>
+      <h3>The moat survives AI</h3>
+      <p style="font-style:italic;border-left:3px solid var(--hair);padding-left:10px;">“As AI makes analysis cheap, our advantage gets stronger, not weaker — because it's the braid of data, methods, and creative, not data access alone.”</p>
+      <p><b>Protectable core:</b> true if we emphasize core IP over tools — the multi-disciplinary interpretive layer is what can't be copied. <i>(Paul)</i></p>
+      <p><b>The real AI risk is upstream:</b> the tsunami hits the creator ecosystem and audience media diets before it hits our methods — and helping orgs navigate that is itself a value prop. <i>(Kasia)</i></p>
+      <p style="font-style:italic;color:var(--ink50);">Rewritten as offense (per Justin), anchored on what's protectable (per Paul).</p>
+    </div>
+    <div class="acard" style="border-top:5px solid var(--sage);">
+      <span class="badge b-adopted">A3 · Holds — with homework</span>
+      <h3>Evidence changes behavior</h3>
+      <p style="font-style:italic;border-left:3px solid var(--hair);padding-left:10px;">“Give practitioners usable, audience-first evidence and they will actually change how they work.”</p>
+      <p><b>SHOW ME ONE:</b> “what is the evidence of a partner taking this and really running with it and transforming?” <i>(Jon)</i></p>
+      <p style="font-style:italic;color:var(--ink50);">The honest answer shapes v1: we owe ourselves a gold-standard case study — and adoption design that survives board politics and supporter perceptions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · PARKING LOT + SECOND DOOR -->
+<section class="slide">
+  <p class="kick">Held on purpose · not for today's hour</p>
+  <h2>The parking lot <em>— including the second door, explained</em></h2>
+  <div class="cols">
+    <div class="main">
+      <div class="draft" style="border-top-color:var(--red);">
+        <p class="dl" style="color:var(--red);">“The second door” — in plain words</p>
+        <p><b>Door one:</b> help advocates and social-change organizations use media better. Most of our revenue lives here today.</p>
+        <p><b>Door two:</b> change how media itself gets made — the practice, impact, and accountability of the media industry, not just its social-change users.</p>
+        <p style="margin-top:10px;">We already stand in the doorway: PBS, NatGeo, TeamWater, Mellon. Brian raised it; Paul, Kasia, and Jon each pushed toward it in prework without knowing that. The question for a future session: <b>is door two in scope for Harmony 3.0 — and what would it cost to walk through?</b></p>
+      </div>
+    </div>
+    <div class="side">
+      <p class="sl">Also parked — the balance questions</p>
+      <div class="chip"><p class="ct" style="color:var(--ink70)">Now vs. next</p><p>How much of this map is work we already do vs. work we haven't prioritized? What's the right balance — and what does it cost?</p></div>
+      <div class="chip"><p class="ct" style="color:var(--ink70)">Where does our day-to-day partner work fit?</p><p>Our bespoke partner engagements pay the bills today. On this map, are they the revenue that funds the strategies, part of the strategies themselves, or both? It deserves a named place.</p></div>
+      <div class="chip"><p class="ct" style="color:var(--ink70)">Less of, more of</p><p>If this map is right — what do we do less of, and what do we do more of?</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 · HANDOFF TO MIRO -->
+<section class="slide center">
+  <div class="inner">
+    <p class="kick">Now it's your board</p>
+    <h1>Gallery walk <em>— 10 minutes, silent</em></h1>
+    <p class="lede">Everything you just saw sits on the Miro board next to your original stickies — v0, unrevised, so your feedback stays attached to what you actually reacted to.</p>
+    <div class="popgrid">
+      <div class="popcard"><p class="pt">1 · Walk + add</p><p>Read the clusters. Add stickies where something's missing, wrong, or newly obvious.</p></div>
+      <div class="popcard"><p class="pt">2 · Vote</p><p>Up to <b>3 dots</b>: where should leadership spend today's discussion time? Top two win the timer.</p></div>
+      <div class="popcard"><p class="pt">3 · Then, together</p><p>Timed discussion on your top two → Costa Rica prep with your <b>stars</b> (workshop with the full team) and <b>stop signs</b> (keep with leadership) → parking lot for future leadership sessions.</p></div>
+    </div>
+    <p class="footer-note">The bar, one more time: directionally correct. We're getting this workshop-ready for Costa Rica — not finished.</p>
+  </div>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let cur = 0;
+  function render(){
+    slides.forEach((s,i)=>s.classList.toggle('active', i===cur));
+    document.getElementById('counter').textContent = (cur+1) + ' / ' + slides.length;
+    document.getElementById('bar').style.width = ((cur+1)/slides.length*100) + '%';
+  }
+  function go(d){ cur = Math.min(slides.length-1, Math.max(0, cur+d)); render(); }
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown') go(1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp') go(-1);
+    if(e.key==='Home'){cur=0;render();}
+    if(e.key==='End'){cur=slides.length-1;render();}
+  });
+  render();
+</script>
+</body>
+</html>
